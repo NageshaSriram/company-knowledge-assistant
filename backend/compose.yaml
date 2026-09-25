@@ -1,0 +1,22 @@
+name: knowledge-assistant
+services:
+  db:
+    image: pgvector/pgvector:0.8.6-pg18-bookworm
+    environment:
+      POSTGRES_DB: knowledge
+      POSTGRES_USER: knowledge
+      POSTGRES_PASSWORD: "${KNOWLEDGE_DB_PASSWORD:?Set KNOWLEDGE_DB_PASSWORD first}"
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - knowledge_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-U", "knowledge", "-d", "knowledge"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+volumes:
+  knowledge_data:
+
